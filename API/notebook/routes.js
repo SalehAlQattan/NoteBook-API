@@ -1,33 +1,47 @@
-const express = require("express");
+const express = require('express');
 const {
   notebookFetch,
+  fetchNotebook,
   notebookUpdate,
   notebookDelete,
   notebookCreate,
   noteCreate,
-} = require("./controllers");
+} = require('./controllers');
 
-const multer = require("multer");
+const multer = require('multer');
 
 const router = express.Router();
 
 // Multer
 const storage = multer.diskStorage({
-  destination: "./media",
+  destination: './media',
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
 const upload = multer({ storage });
 
-router.get("/", notebookFetch);
+// param middleware
+router.param('notebookId', async (req, res, next, notebookId) => {
+  const notebook = await fetchNotebook(notebookId, next);
+  if (notebook) {
+    req.notebook = notebook;
+    next();
+  } else {
+    const error = new Error('Notebook Not Found!');
+    error.status(404);
+    next(error);
+  }
+});
 
-router.post("/", upload.single("image"), notebookCreate);
+router.get('/', notebookFetch);
 
-router.put("/:notebook", upload.single("image"), notebookUpdate);
+router.post('/', upload.single('image'), notebookCreate);
 
-router.post("/:notebookId/notes", upload.single("image"), noteCreate);
+router.put('/:notebookId', upload.single('image'), notebookUpdate);
 
-router.delete("/:notebook", notebookDelete);
+router.post('/:notebookId/notes', upload.single('image'), noteCreate);
+
+router.delete('/:notebook', notebookDelete);
 
 module.exports = router;
