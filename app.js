@@ -14,6 +14,7 @@ app.use(express.json());
 // CRUD routes
 app.use('/notes', noteRoutes);
 app.use('/notebooks', notebookRoutes);
+app.use('/media', express.static('media'));
 
 // Error Middleware
 app.use((err, req, res, next) => {
