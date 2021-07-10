@@ -22,7 +22,7 @@ const upload = multer({ storage });
 router.param('noteId', async (req, res, next, noteId) => {
   const note = await fetchNote(noteId, next);
   if (note) {
-    req.note = kayak;
+    req.note = note;
     next();
   } else {
     const error = new Error('note Not Found!');
@@ -33,8 +33,8 @@ router.param('noteId', async (req, res, next, noteId) => {
 
 router.get('/', noteFetch);
 
-router.put('/:notebook', upload.single('image'), noteUpdate);
+router.put('/:noteId', upload.single('image'), noteUpdate);
 
-router.delete('/:notebook', noteDelete);
+router.delete('/:noteId', noteDelete);
 
 module.exports = router;

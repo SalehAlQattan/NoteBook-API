@@ -42,6 +42,6 @@ router.put('/:notebookId', upload.single('image'), notebookUpdate);
 
 router.post('/:notebookId/notes', upload.single('image'), noteCreate);
 
-router.delete('/:notebook', notebookDelete);
+router.delete('/:notebookId', notebookDelete);
 
 module.exports = router;
